@@ -1,24 +1,25 @@
-import logo from './logo.png';
-import './App.css';
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./widgets/Layout";
+import Loading from "./widgets/Loading";
 
-function App() {
+const Welcome = React.lazy(() => import('./pages/welcome'));
+const Dashboard = React.lazy(() => import('./pages/dashboard'));
+const ErrorPage = React.lazy(() => import('./pages/error'));
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Welcome />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<ErrorPage code="404" message="Halaman tidak ditemukan!" />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 
